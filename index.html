@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gelaine Gelato</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #fff0f5; color: #333; padding: 20px; }
+    h1 { text-align: center; color: #b30059; margin-bottom: 5px; }
+    .logo { display: flex; justify-content: center; margin-bottom: 10px; }
+    .logo img { max-width: 150px; height: auto; border-radius: 10px; }
+    .sabores { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; max-width: 800px; margin: auto; }
+    .item { background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 10px; text-align: center; }
+    button { background: #b30059; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+    #carrinho { max-width: 600px; margin: 40px auto; background: #ffe6f0; padding: 20px; border-radius: 10px; }
+    .btn-finalizar { background: #008000; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <img src="495447586_17843740170481306_5513882601569200874_n.jpg" alt="Logo Gelaine Gelato">
+  </div>
+  <h1>Gelaine Gelato</h1>
+  <h3 style="text-align:center">Geladinhos Gourmet - R$6 cada ou 4 por R$20</h3>
+
+  <div class="sabores" id="sabores"></div>
+
+  <div id="carrinho">
+    <h2>Carrinho</h2>
+    <ul id="lista-carrinho"></ul>
+    <p id="total"></p>
+    <button class="btn-finalizar" onclick="finalizarPedido()">Finalizar pedido no WhatsApp</button>
+  </div>
+
+  <script>
+    const sabores = ["Ovomaltine", "Uva", "Morango", "Prestígio", "Bis", "Coco", "Oreo"];
+    const precoUnitario = 6;
+    const precoPromo = 20;
+    let carrinho = [];
+
+    const saboresDiv = document.getElementById("sabores");
+    sabores.forEach(sabor => {
+      const item = document.createElement("div");
+      item.className = "item";
+      item.innerHTML = `
+        <h4>${sabor}</h4>
+        <button onclick="adicionarCarrinho('${sabor}')">Adicionar</button>
+      `;
+      saboresDiv.appendChild(item);
+    });
+
+    function adicionarCarrinho(sabor) {
+      carrinho.push(sabor);
+      atualizarCarrinho();
+    }
+
+    function atualizarCarrinho() {
+      const lista = document.getElementById("lista-carrinho");
+      lista.innerHTML = "";
+      carrinho.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        lista.appendChild(li);
+      });
+
+      const totalElem = document.getElementById("total");
+      let total = 0;
+      const gruposPromo = Math.floor(carrinho.length / 4);
+      const restante = carrinho.length % 4;
+      total = (gruposPromo * precoPromo) + (restante * precoUnitario);
+      totalElem.textContent = `Total: R$ ${total.toFixed(2)}`;
+    }
+
+    function finalizarPedido() {
+      if (carrinho.length === 0) {
+        alert("Seu carrinho está vazio!");
+        return;
+      }
+      const mensagem = encodeURIComponent(`Olá! Quero pedir os seguintes geladinhos:
+
+${carrinho.join(", ")}
+
+Total: R$ ${calcularTotal().toFixed(2)}`);
+      const telefone = "11989059273";
+      window.open(`https://wa.me/55${telefone}?text=${mensagem}`, '_blank');
+    }
+
+    function calcularTotal() {
+      const gruposPromo = Math.floor(carrinho.length / 4);
+      const restante = carrinho.length % 4;
+      return (gruposPromo * precoPromo) + (restante * precoUnitario);
+    }
+  </script>
+</body>
+</html>
